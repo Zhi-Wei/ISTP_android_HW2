@@ -1,13 +1,11 @@
 package com.example.user.myandroidapp;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -43,7 +41,7 @@ public class PokemonListActivity extends CustomizedActivity implements OnPokemon
         int selectedIndex = srcIntent.getIntExtra(MainActivity.selectedPokemonIndexKey, 0);
         ownedPokemonInfos.add(0, initPokemonInfos[selectedIndex]);
 
-        ListView listView = (ListView)findViewById(R.id.listView);
+        ListView listView = (ListView) findViewById(R.id.listView);
         arrayAdapter = new PokemonListViewAdapter(this,
                 R.layout.row_view_of_pokemon_list,
                 ownedPokemonInfos);
@@ -56,10 +54,9 @@ public class PokemonListActivity extends CustomizedActivity implements OnPokemon
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(arrayAdapter.selectedPokemons.isEmpty()) {
+        if (arrayAdapter.selectedPokemons.isEmpty()) {
             return false; //not showing anything on action bar
-        }
-        else {
+        } else {
             getMenuInflater().inflate(R.menu.selected_pokemon_action_bar, menu);
             return true; //show the menu items on action bar
         }
@@ -68,8 +65,8 @@ public class PokemonListActivity extends CustomizedActivity implements OnPokemon
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if(itemId == R.id.action_delete) {
-            for(OwnedPokemonInfo ownedPokemonInfo : arrayAdapter.selectedPokemons) {
+        if (itemId == R.id.action_delete) {
+            for (OwnedPokemonInfo ownedPokemonInfo : arrayAdapter.selectedPokemons) {
                 ownedPokemonInfos.remove(ownedPokemonInfo);
             }
             arrayAdapter.selectedPokemons.clear();
@@ -83,8 +80,7 @@ public class PokemonListActivity extends CustomizedActivity implements OnPokemon
 
             invalidateOptionsMenu();
             return true;
-        }
-        else {
+        } else {
             return super.onOptionsItemSelected(item);
         }
     }
@@ -108,10 +104,10 @@ public class PokemonListActivity extends CustomizedActivity implements OnPokemon
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == detailActivityRequestCode) { //this result came from detail activity
-            if(resultCode == DetailActivity.savePokemonIntoComputer) {
+        if (requestCode == detailActivityRequestCode) { //this result came from detail activity
+            if (resultCode == DetailActivity.savePokemonIntoComputer) {
                 String pokemonName = data.getStringExtra(OwnedPokemonInfo.nameKey);
-                if(arrayAdapter != null) {
+                if (arrayAdapter != null) {
                     OwnedPokemonInfo ownedPokemonInfo = arrayAdapter.getItemWithName(pokemonName);
                     arrayAdapter.remove(ownedPokemonInfo);
 
@@ -123,7 +119,12 @@ public class PokemonListActivity extends CustomizedActivity implements OnPokemon
                 }
             }
             // add a new result code in DetailActivity and write a corresponding conditional statement here to do the update effect
-
+            else if (resultCode == DetailActivity.levelUp) {
+                OwnedPokemonInfo ownedPokemonInfo = data.getParcelableExtra(OwnedPokemonInfo.class.getSimpleName());
+                if (arrayAdapter != null) {
+                    arrayAdapter.update(ownedPokemonInfo);
+                }
+            }
 
         }
 
